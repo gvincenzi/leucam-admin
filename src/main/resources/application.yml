@@ -1,0 +1,88 @@
+server:
+  port: 8884
+
+spring:
+  application:
+    name: leucam-admin
+  rabbitmq:
+    addresses: amqp://tmwtbfjj:fXhbTFsfVvw_hIwTshosVKn4IxFpV69X@stingray.rmq.cloudamqp.com/tmwtbfjj
+  cloud:
+    stream:
+      bindings:
+        userRegistrationChannel:
+          destination: leucam-user-registration
+        userOrderChannel:
+          destination: leucam-order-registration
+        orderPaymentConfirmationChannel:
+          destination: leucam-order-payment-confirmation
+        userCancellationChannel:
+          destination: leucam-user-cancellation
+        rechargeUserCreditChannel:
+          destination: leucam-recharge-user-credit
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8880/eureka
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 15000
+        readTimeout: 15000
+
+label:
+  button:
+    userManagement: Users management
+    userNew: New User
+    productManagement: Products management
+    productNew: New Product
+    save: Save
+    reset: Reset
+    delete: Delete
+
+  user:
+    firstname: First name
+    lastname: Last name
+    mail: Mail
+    active: is Active
+    credit: Credit for internal payment system (€)
+    newCredit: New Credit
+    oldCredit: Old Credit
+    rechargeUserCreditType: Recharge Type
+    rechargeDateTime: Recharge DateTime
+    administrator: Administrator
+    cashFund: Cash fund
+  product:
+    name: Name
+    description: Description
+    fileId: File ID
+    filePath: File Path
+    active: is Active
+    showHistory: Show past products
+    urlOrderPublic: http://localhost:8881/leucam-order-service/public/products/
+  order:
+    user: User
+    actionType: Action
+    frontBackType: Front or Front/Back
+    colorType: Color or Gray
+    numberOfCopies: Number of copies
+    pagesPerSheet: Pages per sheet
+    amount: Amount
+    paid: Paid
+    paymentExternalReference: Payment External Reference
+    paymentExternalDateTime: Payment External Date
+
+admin:
+  username: admin
+  password: $2a$10$q3N/aKgnRhogokVQO8BnduFAMbHfv6VzUKI0g3JQdAHhncz7OdTBC
+
+leucam:
+  api:
+    username:
+    password:
