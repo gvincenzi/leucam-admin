@@ -40,7 +40,7 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
 
     private TextField name, description, filePath, fileId;
     private Checkbox active;
-    private Button save, reset, delete;
+    private Button save, reset, delete, openDocument;
 
     private Binder<ProductDTO> binder = new Binder<>(ProductDTO.class);
     private ChangeHandler changeHandler;
@@ -64,8 +64,9 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
         save = new Button(buttonLabelConfig.getSave(), VaadinIcon.CHECK.create());
         reset = new Button(buttonLabelConfig.getReset());
         delete = new Button(buttonLabelConfig.getDelete(), VaadinIcon.TRASH.create());
+        openDocument = new Button(buttonLabelConfig.getOpenDocument(), VaadinIcon.BULLSEYE.create());
 
-        HorizontalLayout actions = new HorizontalLayout(save, reset, delete);
+        HorizontalLayout actions = new HorizontalLayout(save, openDocument, delete);
         VerticalLayout editorFields = new VerticalLayout(name, description, fileId, filePath, active, actions);
         editorFields.setWidth("30%");
         grid.setColumns("user","actionType","frontBackType","colorType","numberOfCopies","paid","pagesPerSheet","paymentExternalReference","paymentExternalDateTime","amount");
@@ -108,6 +109,7 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
         setSpacing(true);
         setWidthFull();
 
+        openDocument.getElement().getThemeList().add("success");
         save.getElement().getThemeList().add("primary");
         delete.getElement().getThemeList().add("error");
 
@@ -117,6 +119,11 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
         reset.addClickListener(e -> editProduct(productDTO));
+        openDocument.addClickListener(e ->
+                        openDocument.getUI().ifPresent(ui ->
+                                        ui.getPage().open(productDTO.getFilePath())
+                        )
+        );
         setVisible(false);
     }
 

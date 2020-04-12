@@ -34,7 +34,6 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
     private final MQListener mqListener;
     final Grid<ProductDTO> grid;
     private final Button addNewBtn, usersBtn, logoutBtn;
-    private final Checkbox showHistory;
 
     public ProductsView(ProductResourceClient productResourceClient, ProductEditor productEditor, ProductLabelConfig productLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
         this.productEditor = productEditor;
@@ -49,11 +48,6 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
         Image logo = new Image(resource, "Leucam Logo");
         logo.setMaxWidth("370px");
         add(logo);
-
-        this.showHistory = new Checkbox(productLabelConfig.getShowHistory());
-        this.showHistory.addClickListener(e -> {
-            refreshProductGrid(productResourceClient);
-        });
 
         this.grid = new Grid<>(ProductDTO.class);
 
@@ -72,7 +66,7 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
 
         // build layout
         HorizontalLayout actions = new HorizontalLayout(addNewBtn, usersBtn, logoutBtn);
-        add(actions, showHistory, grid, productEditor);
+        add(actions, grid, productEditor);
 
         refreshProductGrid(productResourceClient);
         grid.setHeight("300px");
@@ -100,11 +94,7 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
     }
 
     private void refreshProductGrid(ProductResourceClient productResourceClient) {
-        if(this.showHistory.getValue()){
-            grid.setItems(productResourceClient.getHistory());
-        } else {
-            grid.setItems(productResourceClient.findAll());
-        }
+        grid.setItems(productResourceClient.findAll());
     }
 
     public void refreshProductGrid(){

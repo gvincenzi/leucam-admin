@@ -45,6 +45,7 @@ label:
     save: Save
     reset: Reset
     delete: Delete
+    openDocument: Open document
 
   user:
     firstname: First name
@@ -64,7 +65,6 @@ label:
     fileId: File ID
     filePath: File Path
     active: is Active
-    showHistory: Show past products
     urlOrderPublic: http://localhost:8881/leucam-order-service/public/products/
   order:
     user: User

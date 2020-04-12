@@ -12,9 +12,6 @@ public interface ProductResourceClient {
     @GetMapping("/all")
     List<ProductDTO> findAll();
 
-    @GetMapping("/history")
-    List<ProductDTO> getHistory();
-
     @GetMapping("/{id}")
     ProductDTO findById(@PathVariable("id") Long id);
 

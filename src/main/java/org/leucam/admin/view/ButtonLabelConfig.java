@@ -17,4 +17,5 @@ public class ButtonLabelConfig {
     private String save;
     private String reset;
     private String delete;
+    private String openDocument;
 }
