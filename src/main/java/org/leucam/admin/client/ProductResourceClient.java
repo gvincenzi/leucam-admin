@@ -9,6 +9,9 @@ import java.util.List;
 
 @FeignClient("leucam-order-service/products")
 public interface ProductResourceClient {
+    @GetMapping
+    List<ProductDTO> findActives();
+
     @GetMapping("/all")
     List<ProductDTO> findAll();
 

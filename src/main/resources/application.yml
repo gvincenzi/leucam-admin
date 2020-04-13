@@ -38,9 +38,10 @@ feign:
 
 label:
   button:
-    userManagement: Users management
+    userManagement: Users
     userNew: New User
-    productManagement: Products management
+    productManagement: Products
+    quickPrintManagement: Quick print
     productNew: New Product
     save: Save
     reset: Reset
@@ -65,6 +66,7 @@ label:
     fileId: File ID
     filePath: File Path
     active: is Active
+    showHistory: Show all products (not active also)
     urlOrderPublic: http://localhost:8881/leucam-order-service/public/products/
   order:
     user: User
@@ -77,6 +79,7 @@ label:
     paid: Paid
     paymentExternalReference: Payment External Reference
     paymentExternalDateTime: Payment External Date
+    showDone: Show done orders also
 
 admin:
   username: admin

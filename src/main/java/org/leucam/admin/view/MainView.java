@@ -41,6 +41,13 @@ public class MainView extends VerticalLayout {
                         ui.navigate("products"))
         );
 
+        Button buttonQuickPrint = new Button(
+                buttonLabelConfig.getQuickPrintManagement(), VaadinIcon.COPY.create());
+        buttonQuickPrint.addClickListener(e ->
+                buttonQuickPrint.getUI().ifPresent(ui ->
+                        ui.navigate("quickprint"))
+        );
+
         Button buttonLogout = new Button("Logout", VaadinIcon.EXIT.create());
         buttonLogout.addClickListener(e -> {
             SecurityContextHolder.clearContext();
@@ -48,7 +55,7 @@ public class MainView extends VerticalLayout {
         });
 
         // build layout
-        HorizontalLayout actions = new HorizontalLayout(buttonUser, buttonProduct, buttonLogout);
+        HorizontalLayout actions = new HorizontalLayout(buttonUser, buttonProduct, buttonQuickPrint, buttonLogout);
         add(actions);
     }
 }

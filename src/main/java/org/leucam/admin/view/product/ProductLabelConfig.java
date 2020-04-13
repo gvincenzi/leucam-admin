@@ -15,6 +15,6 @@ public class ProductLabelConfig {
     private String fileId;
     private String filePath;
     private String active;
-    private String showHistory;
+    private String showAll;
     private String urlOrderPublic;
 }

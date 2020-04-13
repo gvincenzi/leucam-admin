@@ -24,16 +24,17 @@ import java.io.InputStream;
 
 @Push
 @Route
-@PageTitle("Leucam - Product List")
+@PageTitle("Leucam - Catalog - Product list")
 public class ProductsView extends VerticalLayout implements KeyNotifier {
     private final ProductResourceClient productResourceClient;
     private final ProductEditor productEditor;
     private final ProductLabelConfig productLabelConfig;
     private final ButtonLabelConfig buttonLabelConfig;
+    private final Checkbox showAll;
 
     private final MQListener mqListener;
     final Grid<ProductDTO> grid;
-    private final Button addNewBtn, usersBtn, logoutBtn;
+    private final Button addNewBtn, usersBtn, quickPrintBtn, logoutBtn;
 
     public ProductsView(ProductResourceClient productResourceClient, ProductEditor productEditor, ProductLabelConfig productLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
         this.productEditor = productEditor;
@@ -49,6 +50,11 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
         logo.setMaxWidth("370px");
         add(logo);
 
+        this.showAll = new Checkbox(productLabelConfig.getShowAll());
+        this.showAll.addClickListener(e -> {
+            refreshProductGrid(productResourceClient);
+        });
+
         this.grid = new Grid<>(ProductDTO.class);
 
         this.addNewBtn = new Button(buttonLabelConfig.getProductNew(), VaadinIcon.PLUS.create());
@@ -57,7 +63,12 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
                 usersBtn.getUI().ifPresent(ui ->
                         ui.navigate("users"))
         );
-
+        this.quickPrintBtn = new Button(
+                buttonLabelConfig.getQuickPrintManagement(), VaadinIcon.COPY.create());
+        quickPrintBtn.addClickListener(e ->
+                quickPrintBtn.getUI().ifPresent(ui ->
+                        ui.navigate("quickprint"))
+        );
         this.logoutBtn = new Button("Logout", VaadinIcon.EXIT.create());
         this.logoutBtn.addClickListener(e -> {
             SecurityContextHolder.clearContext();
@@ -65,7 +76,7 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
         });
 
         // build layout
-        HorizontalLayout actions = new HorizontalLayout(addNewBtn, usersBtn, logoutBtn);
+        HorizontalLayout actions = new HorizontalLayout(addNewBtn, usersBtn, quickPrintBtn, logoutBtn);
         add(actions, grid, productEditor);
 
         refreshProductGrid(productResourceClient);
@@ -94,7 +105,11 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
     }
 
     private void refreshProductGrid(ProductResourceClient productResourceClient) {
-        grid.setItems(productResourceClient.findAll());
+        if(this.showAll.getValue()){
+            grid.setItems(productResourceClient.findAll());
+        } else {
+            grid.setItems(productResourceClient.findActives());
+        }
     }
 
     public void refreshProductGrid(){

@@ -5,6 +5,7 @@ import org.leucam.admin.binding.MQBinding;
 import org.leucam.admin.dto.OrderDTO;
 import org.leucam.admin.dto.UserDTO;
 import org.leucam.admin.view.product.ProductsView;
+import org.leucam.admin.view.quickprint.QuickPrintView;
 import org.leucam.admin.view.user.UsersView;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -14,10 +15,16 @@ public class MQListener {
     UI ui;
     UsersView usersView;
     ProductsView productsView;
+    QuickPrintView quickPrintView;
 
     public void setUIAndUsersViewToUpdate(UI ui, UsersView usersView){
         this.ui = ui;
         this.usersView = usersView;
+    }
+
+    public void setUIAndQuickPrintViewToUpdate(UI ui, QuickPrintView quickPrintView){
+        this.ui = ui;
+        this.quickPrintView = quickPrintView;
     }
 
     @StreamListener(target = MQBinding.USER_REGISTRATION)
@@ -33,6 +40,9 @@ public class MQListener {
             ui.access(() -> productsView.refreshProductGrid());
             ui.access(() -> productsView.refreshProductOrdersGrid(msg.getProduct().getProductId()));
         }
+        if(quickPrintView != null){
+            ui.access(()->quickPrintView.refreshQuickPrintGrid());
+        }
     }
 
     @StreamListener(target = MQBinding.ORDER_PAYMENT_CONFIRMATION)
@@ -42,6 +52,9 @@ public class MQListener {
         }
         if(productsView != null){
             ui.access(()->productsView.refreshProductOrdersGrid(msg.getProduct().getProductId()));
+        }
+        if(quickPrintView != null){
+            ui.access(()->quickPrintView.refreshQuickPrintGrid());
         }
     }
 
