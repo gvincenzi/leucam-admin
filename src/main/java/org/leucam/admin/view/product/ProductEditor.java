@@ -40,7 +40,7 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
 
     private TextField name, description, filePath, fileId;
     private Checkbox active;
-    private Button save, reset, delete, openDocument;
+    private Button save, reset, delete, openDocument, removeFromCatalog;
 
     private Binder<ProductDTO> binder = new Binder<>(ProductDTO.class);
     private ChangeHandler changeHandler;
@@ -65,8 +65,9 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
         reset = new Button(buttonLabelConfig.getReset());
         delete = new Button(buttonLabelConfig.getDelete(), VaadinIcon.TRASH.create());
         openDocument = new Button(buttonLabelConfig.getOpenDocument(), VaadinIcon.BULLSEYE.create());
+        removeFromCatalog = new Button(buttonLabelConfig.getRemoveFromCatalog(), VaadinIcon.MINUS.create());
 
-        HorizontalLayout actions = new HorizontalLayout(save, openDocument, delete);
+        HorizontalLayout actions = new HorizontalLayout(save, openDocument, delete, removeFromCatalog);
         VerticalLayout editorFields = new VerticalLayout(name, description, fileId, filePath, active, actions);
         editorFields.setWidth("30%");
         grid.setColumns("user","actionType","frontBackType","colorType","numberOfCopies","paid","pagesPerSheet","paymentExternalReference","paymentExternalDateTime","amount");
@@ -112,6 +113,7 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
         openDocument.getElement().getThemeList().add("success");
         save.getElement().getThemeList().add("primary");
         delete.getElement().getThemeList().add("error");
+        removeFromCatalog.getElement().getThemeList().add("error");
 
         addKeyPressListener(Key.ENTER, e -> save());
 
@@ -124,6 +126,8 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
                                         ui.getPage().open(productDTO.getFilePath())
                         )
         );
+        this.removeFromCatalog.addClickListener(e -> removeFromCatalog());
+
         setVisible(false);
     }
 
@@ -137,6 +141,14 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
             productResourceClient.updateProduct(productDTO.getProductId(), productDTO);
         } else {
             productResourceClient.addProduct(productDTO);
+        }
+        changeHandler.onChange();
+    }
+
+    void removeFromCatalog(){
+        if(productDTO.getProductId() != null){
+            productDTO.setActive(false);
+            productResourceClient.updateProduct(productDTO.getProductId(), productDTO);
         }
         changeHandler.onChange();
     }

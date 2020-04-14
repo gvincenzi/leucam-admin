@@ -47,6 +47,12 @@ label:
     reset: Reset
     delete: Delete
     openDocument: Open document
+    removeFromCatalog: Remove From Catalog
+    putInCatalog: Put In Catalog
+    prepared: Order prepared
+    notPrepared: Order not prepared
+    delivered: Order delivered
+    notDelivered: Order not delivered
 
   user:
     firstname: First name

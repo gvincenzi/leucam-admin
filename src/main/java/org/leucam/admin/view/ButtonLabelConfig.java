@@ -19,4 +19,10 @@ public class ButtonLabelConfig {
     private String reset;
     private String delete;
     private String openDocument;
+    private String putInCatalog;
+    private String removeFromCatalog;
+    private String prepared;
+    private String notPrepared;
+    private String delivered;
+    private String notDelivered;
 }

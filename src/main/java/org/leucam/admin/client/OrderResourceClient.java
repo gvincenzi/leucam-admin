@@ -21,4 +21,7 @@ public interface OrderResourceClient {
 
     @GetMapping("/action/{actionType}")
     List<OrderDTO> findOrdersByActionType(@PathVariable("actionType") ActionType actionType);
+
+    @GetMapping("/action/{actionType}/all")
+    List<OrderDTO> findAllOrdersByActionType(@PathVariable("actionType") ActionType actionType);
 }
