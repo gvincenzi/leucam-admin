@@ -43,7 +43,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
 
     final Grid<OrderDTO> grid;
     private final Button usersBtn, productBtn, logoutBtn;
-    private final Button openDocument, putInCatalog, removeFromCatalog, prepared, notPrepared, delivered, notDelivered;
+    private final Button openDocument, putInCatalog, removeFromCatalog, prepared, notPrepared, delivered, notDelivered, delete;
 
     public QuickPrintView(ProductResourceClient productResourceClient, OrderResourceClient orderResourceClient, ProductLabelConfig productLabelConfig, OrderLabelConfig orderLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
         this.productResourceClient = productResourceClient;
@@ -93,6 +93,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
         notPrepared = new Button(buttonLabelConfig.getNotPrepared(), VaadinIcon.BAN.create());
         delivered = new Button(buttonLabelConfig.getDelivered(), VaadinIcon.PACKAGE.create());
         notDelivered = new Button(buttonLabelConfig.getNotDelivered(), VaadinIcon.BAN.create());
+        delete = new Button(buttonLabelConfig.getDelete(), VaadinIcon.TRASH.create());
         openDocument.getElement().getThemeList().add("success");
         putInCatalog.getElement().getThemeList().add("success");
         removeFromCatalog.getElement().getThemeList().add("error");
@@ -100,8 +101,10 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
         notPrepared.getElement().getThemeList().add("error");
         delivered.getElement().getThemeList().add("success");
         notDelivered.getElement().getThemeList().add("error");
+        delete.getElement().getThemeList().add("error");
 
         openDocument.setVisible(false);
+        delete.setVisible(false);
         putInCatalog.setVisible(false);
         removeFromCatalog.setVisible(false);
         prepared.setVisible(false);
@@ -178,11 +181,20 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
             }
         });
 
+        this.delete.addClickListener(e -> {
+            if(!grid.getSelectedItems().isEmpty()) {
+                OrderDTO orderDTOSelected = grid.getSelectedItems().iterator().next();
+                orderResourceClient.deleteOrder(orderDTOSelected.getOrderId());
+                grid.deselectAll();
+                refreshQuickPrintGrid();
+            }
+        });
+
         // build layout
         HorizontalLayout catalogActions = new HorizontalLayout(putInCatalog, removeFromCatalog);
         HorizontalLayout preparationActions = new HorizontalLayout(prepared, notPrepared);
         HorizontalLayout deliveryActions = new HorizontalLayout(delivered, notDelivered);
-        VerticalLayout itemActions = new VerticalLayout(openDocument,catalogActions,preparationActions,deliveryActions);
+        VerticalLayout itemActions = new VerticalLayout(openDocument,catalogActions,preparationActions,deliveryActions,delete);
 
         // build layout
         HorizontalLayout actions = new HorizontalLayout(usersBtn, productBtn, logoutBtn);
@@ -208,6 +220,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
         // Connect selected Product to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             openDocument.setVisible(false);
+            delete.setVisible(false);
             putInCatalog.setVisible(false);
             removeFromCatalog.setVisible(false);
             prepared.setVisible(false);
@@ -217,6 +230,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
             if (e.getValue()!=null) {
 
                 openDocument.setVisible(true);
+                delete.setVisible(true);
 
                 if (e.getValue().getProduct().getActive()) {
                     putInCatalog.setVisible(false);

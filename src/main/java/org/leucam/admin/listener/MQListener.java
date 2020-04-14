@@ -72,6 +72,20 @@ public class MQListener {
         }
     }
 
+    @StreamListener(target = MQBinding.ORDER_CANCELLATION)
+    public void processOrderCancellation(OrderDTO msg) {
+        if(productsView != null) {
+            ui.access(() -> productsView.refreshProductGrid());
+            ui.access(() -> productsView.refreshProductOrdersGrid(msg.getProduct().getProductId()));
+        }
+        if(quickPrintView != null){
+            ui.access(()->quickPrintView.refreshQuickPrintGrid());
+        }
+        if(usersView != null){
+            ui.access(()->usersView.refreshUserGrid());
+        }
+    }
+
     public void setUIAndProductsViewToUpdate(UI ui, ProductsView productsView) {
         this.ui = ui;
         this.productsView = productsView;

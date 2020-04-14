@@ -19,6 +19,8 @@ spring:
           destination: leucam-user-cancellation
         rechargeUserCreditChannel:
           destination: leucam-recharge-user-credit
+        orderCancellationChannel:
+          destination: leucam-order-cancellation
 
 eureka:
   instance:
