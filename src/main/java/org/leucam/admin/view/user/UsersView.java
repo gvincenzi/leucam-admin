@@ -36,7 +36,7 @@ public class UsersView extends VerticalLayout implements KeyNotifier {
     private final ButtonLabelConfig buttonLabelConfig;
     private final MQListener mqListener;
     final Grid<UserDTO> grid;
-    private final Button addNewBtn, productBtn, quickPrintBtn, logoutBtn;
+    private final Button addNewBtn, productBtn, ordersBtn, logoutBtn;
 
     public UsersView(UserResourceClient userResourceClient, UserCreditResourceClient userCreditResourceClient, UserEditor userEditor, UserLabelConfig userLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
         this.userEditor = userEditor;
@@ -60,11 +60,11 @@ public class UsersView extends VerticalLayout implements KeyNotifier {
                 productBtn.getUI().ifPresent(ui ->
                         ui.navigate("products"))
         );
-        this.quickPrintBtn = new Button(
-                buttonLabelConfig.getQuickPrintManagement(), VaadinIcon.COPY.create());
-        quickPrintBtn.addClickListener(e ->
-                quickPrintBtn.getUI().ifPresent(ui ->
-                        ui.navigate("quickprint"))
+        this.ordersBtn = new Button(
+                buttonLabelConfig.getOrdersManagement(), VaadinIcon.COPY.create());
+        ordersBtn.addClickListener(e ->
+                ordersBtn.getUI().ifPresent(ui ->
+                        ui.navigate("orders"))
         );
         this.logoutBtn = new Button("Logout", VaadinIcon.EXIT.create());
         this.logoutBtn.addClickListener(e -> {
@@ -74,10 +74,10 @@ public class UsersView extends VerticalLayout implements KeyNotifier {
 
 
         // build layout
-        HorizontalLayout actions = new HorizontalLayout(addNewBtn, productBtn, quickPrintBtn, logoutBtn);
+        HorizontalLayout actions = new HorizontalLayout(productBtn, ordersBtn, logoutBtn);
 
         Text text = new Text(String.format("%s : %s €",userLabelConfig.getCashFund(),userCreditResourceClient.totalUserCredit().toString()));
-        add(actions, grid, text, userEditor);
+        add(actions, addNewBtn, grid, text, userEditor);
 
         grid.setItems(setUserGridItems(userResourceClient));
         grid.setHeight("300px");

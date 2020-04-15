@@ -5,7 +5,7 @@ import org.leucam.admin.binding.MQBinding;
 import org.leucam.admin.dto.OrderDTO;
 import org.leucam.admin.dto.UserDTO;
 import org.leucam.admin.view.product.ProductsView;
-import org.leucam.admin.view.quickprint.QuickPrintView;
+import org.leucam.admin.view.order.OrdersView;
 import org.leucam.admin.view.user.UsersView;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -15,16 +15,16 @@ public class MQListener {
     UI ui;
     UsersView usersView;
     ProductsView productsView;
-    QuickPrintView quickPrintView;
+    OrdersView ordersView;
 
     public void setUIAndUsersViewToUpdate(UI ui, UsersView usersView){
         this.ui = ui;
         this.usersView = usersView;
     }
 
-    public void setUIAndQuickPrintViewToUpdate(UI ui, QuickPrintView quickPrintView){
+    public void setUIAndOrdersViewToUpdate(UI ui, OrdersView ordersView){
         this.ui = ui;
-        this.quickPrintView = quickPrintView;
+        this.ordersView = ordersView;
     }
 
     @StreamListener(target = MQBinding.USER_REGISTRATION)
@@ -40,8 +40,8 @@ public class MQListener {
             ui.access(() -> productsView.refreshProductGrid());
             ui.access(() -> productsView.refreshProductOrdersGrid(msg.getProduct().getProductId()));
         }
-        if(quickPrintView != null){
-            ui.access(()->quickPrintView.refreshQuickPrintGrid());
+        if(ordersView != null){
+            ui.access(()-> ordersView.refreshOrdersGrid());
         }
     }
 
@@ -53,8 +53,8 @@ public class MQListener {
         if(productsView != null){
             ui.access(()->productsView.refreshProductOrdersGrid(msg.getProduct().getProductId()));
         }
-        if(quickPrintView != null){
-            ui.access(()->quickPrintView.refreshQuickPrintGrid());
+        if(ordersView != null){
+            ui.access(()-> ordersView.refreshOrdersGrid());
         }
     }
 
@@ -78,8 +78,8 @@ public class MQListener {
             ui.access(() -> productsView.refreshProductGrid());
             ui.access(() -> productsView.refreshProductOrdersGrid(msg.getProduct().getProductId()));
         }
-        if(quickPrintView != null){
-            ui.access(()->quickPrintView.refreshQuickPrintGrid());
+        if(ordersView != null){
+            ui.access(()-> ordersView.refreshOrdersGrid());
         }
         if(usersView != null){
             ui.access(()->usersView.refreshUserGrid());

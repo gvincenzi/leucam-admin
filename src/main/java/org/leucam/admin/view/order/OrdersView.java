@@ -1,4 +1,4 @@
-package org.leucam.admin.view.quickprint;
+package org.leucam.admin.view.order;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.KeyNotifier;
@@ -27,11 +27,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Push
 @Route
-@PageTitle("Leucam - Quick print")
-public class QuickPrintView extends VerticalLayout implements KeyNotifier {
+@PageTitle("Leucam - Print orders")
+public class OrdersView extends VerticalLayout implements KeyNotifier {
     private final ProductResourceClient productResourceClient;
     private final OrderResourceClient orderResourceClient;
     private final ProductLabelConfig productLabelConfig;
@@ -45,7 +47,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
     private final Button usersBtn, productBtn, logoutBtn;
     private final Button openDocument, putInCatalog, removeFromCatalog, prepared, notPrepared, delivered, notDelivered, delete;
 
-    public QuickPrintView(ProductResourceClient productResourceClient, OrderResourceClient orderResourceClient, ProductLabelConfig productLabelConfig, OrderLabelConfig orderLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
+    public OrdersView(ProductResourceClient productResourceClient, OrderResourceClient orderResourceClient, ProductLabelConfig productLabelConfig, OrderLabelConfig orderLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
         this.productResourceClient = productResourceClient;
         this.orderResourceClient = orderResourceClient;
         this.productLabelConfig = productLabelConfig;
@@ -62,7 +64,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
 
         this.showDone = new Checkbox(orderLabelConfig.getShowDone());
         this.showDone.addClickListener(e -> {
-            refreshQuickPrintGrid(orderResourceClient);
+            refreshOrdersGrid(orderResourceClient);
         });
 
         this.grid = new Grid<>(OrderDTO.class);
@@ -120,7 +122,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                     productDTO.setActive(true);
                     productResourceClient.updateProduct(productDTO.getProductId(), productDTO);
                 }
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -132,7 +134,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                     productDTO.setActive(false);
                     productResourceClient.updateProduct(productDTO.getProductId(), productDTO);
                 }
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -141,7 +143,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                 OrderDTO orderDTOSelected = grid.getSelectedItems().iterator().next();
                 orderDTOSelected.setOrderPreparationDate(LocalDateTime.now());
                 orderResourceClient.updateOrder(orderDTOSelected.getOrderId(), orderDTOSelected);
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -150,7 +152,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                 OrderDTO orderDTOSelected = grid.getSelectedItems().iterator().next();
                 orderDTOSelected.setOrderPreparationDate(null);
                 orderResourceClient.updateOrder(orderDTOSelected.getOrderId(),orderDTOSelected);
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -159,7 +161,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                 OrderDTO orderDTOSelected = grid.getSelectedItems().iterator().next();
                 orderDTOSelected.setOrderDeliveryDate(LocalDateTime.now());
                 orderResourceClient.updateOrder(orderDTOSelected.getOrderId(),orderDTOSelected);
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -168,7 +170,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                 OrderDTO orderDTOSelected = grid.getSelectedItems().iterator().next();
                 orderDTOSelected.setOrderDeliveryDate(null);
                 orderResourceClient.updateOrder(orderDTOSelected.getOrderId(), orderDTOSelected);
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -186,7 +188,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
                 OrderDTO orderDTOSelected = grid.getSelectedItems().iterator().next();
                 orderResourceClient.deleteOrder(orderDTOSelected.getOrderId());
                 grid.deselectAll();
-                refreshQuickPrintGrid();
+                refreshOrdersGrid();
             }
         });
 
@@ -200,7 +202,7 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
         HorizontalLayout actions = new HorizontalLayout(usersBtn, productBtn, logoutBtn);
         add(actions, showDone, grid, itemActions);
 
-        refreshQuickPrintGrid(orderResourceClient);
+        refreshOrdersGrid(orderResourceClient);
         grid.setHeight("300px");
 
         grid.setColumns("product.name", "product.filePath", "user", "actionType", "frontBackType", "colorType", "numberOfCopies", "paid", "pagesPerSheet", "paymentExternalReference", "paymentExternalDateTime", "amount");
@@ -260,20 +262,27 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
         });
     }
 
-    private void refreshQuickPrintGrid(OrderResourceClient orderResourceClient) {
+    private void refreshOrdersGrid(OrderResourceClient orderResourceClient) {
+        List<OrderDTO> orderDTOS = new ArrayList<>();
         if (this.showDone.getValue()) {
-            grid.setItems(orderResourceClient.findAllOrdersByActionType(ActionType.QUICK_PRINT));
+            for (ActionType actionType: ActionType.values()) {
+                orderDTOS.addAll(orderResourceClient.findAllOrdersByActionType(actionType));
+            }
         } else {
-            grid.setItems(orderResourceClient.findOrdersByActionType(ActionType.QUICK_PRINT));
+            for (ActionType actionType: ActionType.values()) {
+                orderDTOS.addAll(orderResourceClient.findOrdersByActionType(actionType));
+            }
         }
+
+        grid.setItems(orderDTOS);
     }
 
-    public void refreshQuickPrintGrid(){
+    public void refreshOrdersGrid(){
         OrderDTO orderDTOSelected = null;
         if(!grid.getSelectedItems().isEmpty()) {
             orderDTOSelected = grid.getSelectedItems().iterator().next();
         }
-        refreshQuickPrintGrid(orderResourceClient);
+        refreshOrdersGrid(orderResourceClient);
 
         if(orderDTOSelected != null){
             grid.select(orderDTOSelected);
@@ -282,6 +291,6 @@ public class QuickPrintView extends VerticalLayout implements KeyNotifier {
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        this.mqListener.setUIAndQuickPrintViewToUpdate(attachEvent.getUI(), this);
+        this.mqListener.setUIAndOrdersViewToUpdate(attachEvent.getUI(), this);
     }
 }

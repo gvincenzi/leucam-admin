@@ -34,7 +34,7 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
 
     private final MQListener mqListener;
     final Grid<ProductDTO> grid;
-    private final Button addNewBtn, usersBtn, quickPrintBtn, logoutBtn;
+    private final Button addNewBtn, usersBtn, ordersBtn, logoutBtn;
 
     public ProductsView(ProductResourceClient productResourceClient, ProductEditor productEditor, ProductLabelConfig productLabelConfig, ButtonLabelConfig buttonLabelConfig, MQListener mqListener) {
         this.productEditor = productEditor;
@@ -63,11 +63,11 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
                 usersBtn.getUI().ifPresent(ui ->
                         ui.navigate("users"))
         );
-        this.quickPrintBtn = new Button(
-                buttonLabelConfig.getQuickPrintManagement(), VaadinIcon.COPY.create());
-        quickPrintBtn.addClickListener(e ->
-                quickPrintBtn.getUI().ifPresent(ui ->
-                        ui.navigate("quickprint"))
+        this.ordersBtn = new Button(
+                buttonLabelConfig.getOrdersManagement(), VaadinIcon.COPY.create());
+        ordersBtn.addClickListener(e ->
+                ordersBtn.getUI().ifPresent(ui ->
+                        ui.navigate("orders"))
         );
         this.logoutBtn = new Button("Logout", VaadinIcon.EXIT.create());
         this.logoutBtn.addClickListener(e -> {
@@ -76,8 +76,8 @@ public class ProductsView extends VerticalLayout implements KeyNotifier {
         });
 
         // build layout
-        HorizontalLayout actions = new HorizontalLayout(addNewBtn, usersBtn, quickPrintBtn, logoutBtn);
-        add(actions, grid, productEditor);
+        HorizontalLayout actions = new HorizontalLayout(usersBtn, ordersBtn, logoutBtn);
+        add(actions, addNewBtn, grid, productEditor);
 
         refreshProductGrid(productResourceClient);
         grid.setHeight("300px");

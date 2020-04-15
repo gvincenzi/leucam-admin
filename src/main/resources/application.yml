@@ -43,7 +43,7 @@ label:
     userManagement: Users
     userNew: New User
     productManagement: Products
-    quickPrintManagement: Quick print
+    ordersManagement: Print orders
     productNew: New Product
     save: Save
     reset: Reset

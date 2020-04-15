@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class ButtonLabelConfig {
     private String userManagement;
     private String productManagement;
-    private String quickPrintManagement;
+    private String ordersManagement;
     private String userNew;
     private String productNew;
     private String save;

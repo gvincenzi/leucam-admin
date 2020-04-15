@@ -67,7 +67,7 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
         openDocument = new Button(buttonLabelConfig.getOpenDocument(), VaadinIcon.BULLSEYE.create());
         removeFromCatalog = new Button(buttonLabelConfig.getRemoveFromCatalog(), VaadinIcon.MINUS.create());
 
-        HorizontalLayout actions = new HorizontalLayout(save, openDocument, delete, removeFromCatalog);
+        HorizontalLayout actions = new HorizontalLayout(save, openDocument, removeFromCatalog);
         VerticalLayout editorFields = new VerticalLayout(name, description, fileId, filePath, active, actions);
         editorFields.setWidth("30%");
         grid.setColumns("user","actionType","frontBackType","colorType","numberOfCopies","paid","pagesPerSheet","paymentExternalReference","paymentExternalDateTime","amount");
