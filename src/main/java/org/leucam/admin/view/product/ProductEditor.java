@@ -193,7 +193,7 @@ public class ProductEditor extends HorizontalLayout implements KeyNotifier {
     }
 
     public void refreshProductOrdersGrid(Long productId){
-        if(productId.equals(productDTO.getProductId())){
+        if(productId!=null && productDTO != null && productId.equals(productDTO.getProductId())){
             grid.setItems(productResourceClient.findProductOrders(productDTO.getProductId()));
         }
     }
